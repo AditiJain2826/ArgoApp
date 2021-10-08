@@ -1,34 +1,14 @@
 const express = require("express");
-
 const router = express.Router();
 const passport = require("passport");
 require("../../config/passport-setup");
+const controller = require("../controllers/auth.controller");
 
-router.get(
-  "/signon",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/failed" }),
-  function (req, res) {
-    res.redirect("/pass");
-  }
-);
-
-router.get("/pass", (req, res) => {
-  res.send(`Welcome ${req.user.username}`);
-});
-
-router.get("/failed", (req, res) => {
-  res.status(500).send("Failed to login");
-});
-
-router.get("/logout", (req, res) => {
-  req.session = null;
-  req.logout();
-  res.redirect("/");
-});
+router.get("/",  controller.home);
+router.get("/pass", controller.pass);
+router.get("/failed", controller.failed);
+router.get("/logout", controller.logout);
+router.get("/signon", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/failed" }), controller.callbackRedirect);
 
 module.exports = router;
