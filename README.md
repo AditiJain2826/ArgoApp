@@ -1,11 +1,8 @@
-An API platform that offers common functionality for digital agriculture apps.
+# An API platform that offers common functionality for digital agriculture apps.
 
-Install dependencies:
-npm i
+**Install dependencies: npm i**
 
-Running Locally:
-npm start
+**Running Locally: npm start**
 
-Test
-npm test
+**Test: npm test**
 
