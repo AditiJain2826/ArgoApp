@@ -1,17 +1,17 @@
 const express = require("express");
-const organizationRoutes = require('./organization.routes');
-const propertyRoutes = require('./property.routes');
-const regionRoutes = require('./region.routes');
-const fieldRoutes = require('./field.routes');
-const authRoutes = require('./auth.routes');
-const cropRoutes = require('./crop.routes');
-const cropCycleRoutes = require('./cropcycle.routes')
+const organizationRoutes = require('../organization/organization.routes');
+const propertyRoutes = require('../property/property.routes');
+const regionRoutes = require('../region/region.routes');
+const fieldRoutes = require('../field/field.routes');
+const authRoutes = require('../auth/auth.routes');
+const cropRoutes = require('../crop/crop.routes');
+const cropCycleRoutes = require('../cropcycle/cropcycle.routes')
 const router = express.Router();
 const axios = require('axios')
 
 const passport = require("passport");
 const cookieSession = require("cookie-session");
-require("../../config/passport-setup");
+require("../config/passport-setup");
 
 router.use(
   cookieSession({

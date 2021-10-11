@@ -1,7 +1,5 @@
 const app = require('./config/express');
-const db = require("./api/models");
-
-db.sequelize.sync({ force: true });
+require("./database/database.connect")
 
 app.listen(process.env.PORT, () => console.log(`server started on port ${process.env.PORT}`));
 

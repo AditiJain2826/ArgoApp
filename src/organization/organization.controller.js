@@ -1,4 +1,9 @@
-const { Organization, Property, Region, Field } = require("../models");
+const {
+  Organization,
+  Property,
+  Region,
+  Field,
+} = require("../database/database.schema");
 
 exports.list = async (req, res, next) => {
   try {

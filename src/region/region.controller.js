@@ -1,31 +1,25 @@
-const { Field, Region, Property, Organization } = require("../models");
+const { Region, Property, Organization, Field } = require("../database/database.schema");
 
 exports.list = async (req, res, next) => {
   try {
-    const data = await Field.findAll({
+    const properties = await Region.findAll({
       include: [
         {
-          model: Region,
-          required: true,
+          model: Property,
+          required: false,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
           include: [
             {
-              model: Property,
-              required: true,
+              model: Organization,
+              required: false,
               attributes: { exclude: ["createdAt", "updatedAt"] },
-              include: [
-                {
-                  model: Organization,
-                  required: true,
-                  attributes: { exclude: ["createdAt", "updatedAt"] },
-                  where: { UserId: req.user.id },
-                },
-              ],
+              where: { UserId: req.user.id },
             },
           ],
         },
       ],
     });
-    res.json(data);
+    res.json(properties);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -34,27 +28,26 @@ exports.list = async (req, res, next) => {
 
 exports.getById = async (req, res, next) => {
   try {
-    const data = await Field.findOne({
+    const data = await Region.findOne({
       where: { id: req.params.id },
       include: [
         {
-          model: Region,
-          required: false,
+          model: Property,
+          required: true,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
           include: [
             {
-              model: Property,
-              required: false,
+              model: Organization,
+              required: true,
               attributes: { exclude: ["createdAt", "updatedAt"] },
-              include: [
-                {
-                  model: Organization,
-                  required: false,
-                  attributes: { exclude: ["createdAt", "updatedAt"] },
-                  where: { UserId: req.user.id },
-                },
-              ],
+              where: { UserId: req.user.id },
             },
           ],
+        },
+        {
+          model: Field,
+          required: false,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
         },
       ],
     });
@@ -72,15 +65,15 @@ exports.getById = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { name, RegionId, size, position } = req.body;
-    if (name && RegionId && size && position) {
-      const regionData = await getRegionData(RegionId, req.user.id);
-      if (!regionData) {
-        res.status(404).json({ message: "region not found" });
+    const { name, PropertyId } = req.body;
+    if (name && PropertyId) {
+      const propertyData = await getPropertyData(PropertyId, req.user.id);
+      if (!propertyData) {
+        res.status(404).json({ message: "property not found" });
       } else {
-        const nameExists = await getFieldByName(req.body.name);
+        const nameExists = await getRegionByName(req.body.name);
         if (!nameExists) {
-          const data = await Field.create(req.body);
+          let data = await Region.create(req.body);
           res.status(201).json(data);
         } else {
           res.status(409).json({ message: "Name already exists." });
@@ -97,17 +90,17 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const fieldExists = await doesFieldExists(req.params.id, req.user.id);
-    if (fieldExists) {
-      const { name, RegionId, size, position } = req.body;
-      if (name || RegionId || size || position) {
-        const regionData = RegionId
-          ? await getRegionData(RegionId, user.req.id)
+    const regionExists = await doesRegionExists(req.params.id, req.user.id);
+    if (regionExists) {
+      const { name, PropertyId } = req.body;
+      if (name || PropertyId) {
+        const propertyData = PropertyId
+          ? await getPropertyData(PropertyId, user.req.id)
           : true;
-        if (!regionData) {
-          res.status(404).json({ message: "region not found" });
+        if (!propertyData) {
+          res.status(404).json({ message: "Property not found" });
         } else {
-          const data = await Field.update(req.body, {
+          const data = await Region.update(req.body, {
             where: { id: req.params.id },
           });
           if (data[0] === 1) {
@@ -130,9 +123,9 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    const fieldExist = await doesFieldExists(req.params.id, req.user.id);
-    if (fieldExist) {
-      const data = await Field.destroy({
+    const regionExists = await doesRegionExists(req.params.id, req.user.id);
+    if (regionExists) {
+      const data = await Region.destroy({
         where: { id: req.params.id },
       });
       if (data === 1) {
@@ -149,7 +142,7 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-const doesFieldExists = async (regionId, userId) => {
+const doesRegionExists = async (regionId, userId) => {
   const data = await Region.findOne({
     where: { id: regionId },
     include: [
@@ -171,29 +164,25 @@ const doesFieldExists = async (regionId, userId) => {
   return data ? true : false;
 };
 
-const getRegionData = async (RegionId, userid) => {
-  return await Region.findOne({
-    where: { id: RegionId },
+const getPropertyData = async (PropertyId, userid) => {
+  return await Property.findOne({
+    where: { id: PropertyId },
     include: [
       {
-        model: Property,
+        model: Organization,
         required: true,
-        attributes: { exclude: ["createdAt", "updatedAt"] },
-        include: [
-          {
-            model: Organization,
-            required: true,
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-            where: { UserId: userid },
-          },
-        ],
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "UserId"],
+        },
+        where: { UserId: userid },
       },
     ],
+    attributes: ["name", "id"],
   });
 };
 
-const getFieldByName = async (name) => {
-  return await Field.findOne({
+const getRegionByName = async (name) => {
+  return await Region.findOne({
     where: { name: name },
   });
 };

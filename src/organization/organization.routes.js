@@ -1,5 +1,5 @@
 const express = require("express");
-const controller = require('../controllers/crop.controller');
+const controller = require('./organization.controller');
 
 const router = express.Router();
 

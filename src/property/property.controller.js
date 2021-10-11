@@ -4,7 +4,7 @@ const {
   Region,
   Field,
   CropCycle,
-} = require("../models");
+} = require("../database/database.schema");
 
 exports.list = async (req, res, next) => {
   try {

@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../src/config/express");
-const db = require("../src/api/models/index");
+const db = require("../src/database/database.schema");
 
-const accessToken = 'Bearer ya29.a0ARrdaM8QXIH5U1pUC6cJMKgV1CZdmDZUJe7lewEYoJg76Ea2rRwOSVt5MBUvDMl3htrC7-eJFqzNV6Se6fWK8NwBzU7TJfe9kJqapgKAtO7qaBBczuAPveE2UpYMHfpw6K8E76kkcumt3rGYvnBVc3oXQ3uU'
+const accessToken = 'Bearer ya29.a0ARrdaM98AzYRFsQRCoVvYT7XO81lFLp3SjEhIEFyYKG0QbUaktloOipFhS2b39ZYVGTFsayEmOOLLuY4Fm7YGtAOe6GgHWzUYfESENXjntPUKWuMqRsMD4BBtazKsShtepNmmhM-sUUdCvHMBsG-WtznqMOO'
 
 beforeAll(async () => {
   await db.sequelize.sync({ force: true });

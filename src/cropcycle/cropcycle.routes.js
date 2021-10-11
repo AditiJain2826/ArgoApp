@@ -1,5 +1,5 @@
 const express = require("express");
-const controller = require('../controllers/field.controller');
+const controller = require('./cropcycle.controller');
 
 const router = express.Router();
 

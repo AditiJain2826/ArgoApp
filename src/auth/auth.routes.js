@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-require("../../config/passport-setup");
-const controller = require("../controllers/auth.controller");
+require("../config/passport-setup");
+const controller = require("./auth.controller");
 
 router.get("/",  controller.home);
 router.get("/pass", controller.pass);

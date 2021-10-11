@@ -1,4 +1,4 @@
-const { Crop } = require("../models");
+const { Crop } = require("../database/database.schema");
 
 exports.list = async (req, res, next) => {
   try {
